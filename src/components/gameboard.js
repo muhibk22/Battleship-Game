@@ -76,5 +76,13 @@ export default class Gameboard{
             return true;
         }
     }
+
+    allSunk(){
+        if(this.carrier.isSunk() && this.battleship.isSunk() && this.submarine.isSunk() && 
+        this.destroyer.isSunk() && this.boat1.isSunk() && this.boat2.isSunk()){
+            return true;
+        }
+        return false;
+    }
     
 }
