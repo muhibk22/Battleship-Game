@@ -1,0 +1,10 @@
+.block{
+    width: 10px;
+    height: 10px;
+    background-color: pink;
+    border:1px solid blue;
+}
+
+.row{
+    display: flex;
+}
