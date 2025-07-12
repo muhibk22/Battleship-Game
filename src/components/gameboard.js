@@ -36,16 +36,18 @@ export default class Gameboard {
         }
         else {
             for (let i = 0; i < ship.length; i++) {
-                if (this.blocks[x][y + i] != 0) {
+                if (this.blocks[x+i][y] != 0) {
                     for (let j = 0; j < i; j++) {
                         this.blocks[x + j][y] = 0;
                     }
+                    console.log("already placed");
                     return false;
                 }
                 else {
                     this.blocks[x + i][y] = ship.type;
                 }
             }
+            console.log("placed ship");
             return true;
         }
 

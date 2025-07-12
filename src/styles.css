@@ -37,7 +37,7 @@ body{
 .visited{
     width: 30%;
     height: 30%;
-    background-color: red;
+    background-color: black;
     border-radius: 50%;
 }
 
@@ -55,4 +55,8 @@ body{
     width: 100%;
     height: auto;
     display: flex;
+}
+
+.block.placed {
+  background-color: yellow;
 }
