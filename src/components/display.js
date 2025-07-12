@@ -54,15 +54,39 @@ export function makeMoveUI(attacker, receiver, boardContainer) {
             visited.classList.add("visited");
             block.appendChild(visited);
 
-            if (success && receiver.gameboard.blocks[x][y] === 1) {
+            if (receiver.gameboard.blocks[x][y] === 1) {
                 block.style.backgroundColor = "red";
             }
             else {
                 block.style.backgroundColor = "lightgray";
             }
             block.style.pointerEvents = "none";
+
+            if (success) {
+                computerMoveUI(receiver, attacker);
+            }
         });
     });
 }
 
+function computerMoveUI(attacker, receiver) {
+    const boardContainer = document.querySelector(".player-board");
+    if (attacker.makeMove(receiver.gameboard)) {
+        for (let x = 0; x < receiver.gameboard.size; x++) {
+            for (let y = 0; y < receiver.gameboard.size; y++) {
+                const cellValue = receiver.gameboard.blocks[x][y];
+                const block = boardContainer.querySelector(`.block[data-x="${x}"][data-y="${y}"]`);
+                if ((cellValue === 1 || cellValue === 2) && !block.querySelector(".visited")) {
+                    const visited = document.createElement("div");
+                    visited.classList.add("visited");
+                    block.appendChild(visited);
+                    block.style.backgroundColor = "lightgray";
+                    if (cellValue === 1) {
+                        block.style.backgroundColor = "red";
+                    }
+                }
+            }
+        }
+    }
+}
 
