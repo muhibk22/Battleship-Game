@@ -50,6 +50,22 @@ export default class Gameboard {
         }
 
     }
+    
+    placeRandomly() {
+        const ships = [this.carrier, this.battleship, this.destroyer, this.submarine, this.boat1, this.boat2];
+        const directions=["x","y"]
+        for (const ship of ships) {
+            let placed = false;
+
+            while (!placed) {
+                const axis = directions[Math.floor(Math.random() * 2)];
+                ship.axis = axis;
+                const x = Math.floor(Math.random() * this.size);
+                const y = Math.floor(Math.random() * this.size);
+                placed = this.placeShip(ship, x, y);
+            }
+        }
+    }
 
     removeShip(ship, x, y) {
         if (ship.axis === "x") {
@@ -74,8 +90,8 @@ export default class Gameboard {
             }
             return true;
         }
-
     }
+
     receiveAttack(x, y) {
         if (x < 0 || x > this.size || y < 0 || y > this.size) {
             return false;
