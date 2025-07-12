@@ -18,7 +18,7 @@ test("Blocks are taken so ship does not get placed,",()=>{
 test("Ship size exceeds gameboard edges", ()=>{
     const gameboard = new Gameboard();
     const ship = new Ship(5,"carrier");
-    expect(gameboard.placeShip(ship, 0,6)).toBe(false);
+    expect(gameboard.placeShip(ship, 6,0)).toBe(false);
 })
 
 test("Ship type is correct",()=>{

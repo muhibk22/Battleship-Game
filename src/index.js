@@ -1,5 +1,5 @@
 import "./styles.css";
-import { generateBoards, setShipUI } from "./components/display";
+import { generateBoards, setShipUI, makeMoveUI } from "./components/display";
 import Player from "./components/player";
 
 const player= new Player();
@@ -12,3 +12,6 @@ const computerBoard= document.querySelector(".computer-board");
 generateBoards(); 
 setShipUI(player.gameboard, playerBoard);
 setShipUI(computer.gameboard, computerBoard);
+
+makeMoveUI(player, computer, computerBoard);
+

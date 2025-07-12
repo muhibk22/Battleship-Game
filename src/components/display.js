@@ -27,7 +27,6 @@ export function setShipUI(gameboard, boardContainer) {
         for (let y = 0; y < gameboard.size; y++) {
             const cellValue = gameboard.blocks[x][y];
 
-            // Only highlight actual ships
             const isShip = typeof cellValue === "string" && ["carrier", "battleship", "destroyer", "submarine", "boat1", "boat2"].includes(cellValue);
 
             if (isShip) {
@@ -40,12 +39,30 @@ export function setShipUI(gameboard, boardContainer) {
     }
 }
 
+export function makeMoveUI(attacker, receiver, boardContainer) {
+    const blocks = boardContainer.querySelectorAll(".block");
 
-//   block.addEventListener("click", (e) => {
-//                     if (!block.querySelector(".visited")) {
-//                         const visited = document.createElement("div");
-//                         visited.classList.add("visited");
-//                         block.appendChild(visited);
-//                     }
+    blocks.forEach(block => {
+        block.addEventListener("click", (e) => {
+            const x = parseInt(block.dataset.x);
+            const y = parseInt(block.dataset.y);
 
-//                 })
+            if (block.classList.contains("visited")) return;
+            const success = attacker.makeMove(receiver.gameboard, x, y);
+
+            const visited = document.createElement("div");
+            visited.classList.add("visited");
+            block.appendChild(visited);
+
+            if (success && receiver.gameboard.blocks[x][y] === 1) {
+                block.style.backgroundColor = "red";
+            }
+            else {
+                block.style.backgroundColor = "lightgray";
+            }
+            block.style.pointerEvents = "none";
+        });
+    });
+}
+
+
