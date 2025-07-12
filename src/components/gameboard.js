@@ -21,15 +21,27 @@ export default class Gameboard{
         }
         let isTaken=false;
         for (let i=0; i<ship.length; i++){
-            if (isTaken) {
-                return false;
-            }
             if (this.blocks[x][y+i]!=0){
                 isTaken= true;
             }
+            if (isTaken) {
+                for(let j=0; j<i; j++){
+                    this.blocks[x][y+j]=0;
+                }
+                return false;
+            }
+            else{
+                this.blocks[x][y+i]=ship.type;
+            }          
         }    
-        for (let i=0; i<ship.length; i++){
-            this.blocks[x][y+i]=ship.type;
+        return true;
+    }
+
+    removeShip(ship, x, y){
+
+        while(this.blocks[x][y]===ship.type){
+            this.blocks[x][y]=0;
+            y++;
         }
         return true;
     }
