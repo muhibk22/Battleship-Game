@@ -50,7 +50,7 @@ export default class Gameboard {
         }
 
     }
-    
+
     placeRandomly() {
         const ships = [this.carrier, this.battleship, this.destroyer, this.submarine, this.boat1, this.boat2];
         const directions=["x","y"]
