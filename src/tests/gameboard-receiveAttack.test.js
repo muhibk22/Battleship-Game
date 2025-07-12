@@ -10,8 +10,8 @@ test("Receive attack returns correct value",()=>{
 test("Receive attack increases hits correctly",()=>{
     const gameboard=new Gameboard();
     gameboard.placeShip(gameboard.boat1,1,1)
-    expect(gameboard.receiveAttack(1,2)).toBe(true);
-    expect(gameboard.blocks[1][2]).toEqual(1);
+    expect(gameboard.receiveAttack(2,1)).toBe(true);
+    expect(gameboard.blocks[2][1]).toEqual(1);
 })
 
 test("allSunk() returns true when all ships are sunk", () => {

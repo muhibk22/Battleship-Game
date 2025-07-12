@@ -13,37 +13,68 @@ export default class Gameboard {
     }
 
     placeShip(ship, x, y) {
-        if (x < 0 || x > this.size || y < 0 || y > this.size) {
+        if (x < 0 || x >= this.size || y < 0 || y >= this.size) {
             return false;
         }
-        if (y + ship.length > 10) {
+        if ((ship.axis === "y" && y + ship.length > 10) || (ship.axis === "x" && x + ship.length > 10)) {
             return false;
         }
-        let isTaken = false;
-        for (let i = 0; i < ship.length; i++) {
-            if (this.blocks[x][y + i] != 0) {
-                isTaken = true;
-            }
-            if (isTaken) {
-                for (let j = 0; j < i; j++) {
-                    this.blocks[x][y + j] = 0;
+
+        if (ship.axis === "y") {
+            for (let i = 0; i < ship.length; i++) {
+                if (this.blocks[x][y + i] != 0) {
+                    for (let j = 0; j < i; j++) {
+                        this.blocks[x][y + j] = 0;
+                    }
+                    return false;
                 }
-                return false;
+                else {
+                    this.blocks[x][y + i] = ship.type;
+                }
             }
-            else {
-                this.blocks[x][y + i] = ship.type;
-            }
+            return true;
         }
-        return true;
+        else {
+            for (let i = 0; i < ship.length; i++) {
+                if (this.blocks[x][y + i] != 0) {
+                    for (let j = 0; j < i; j++) {
+                        this.blocks[x + j][y] = 0;
+                    }
+                    return false;
+                }
+                else {
+                    this.blocks[x + i][y] = ship.type;
+                }
+            }
+            return true;
+        }
+
     }
 
     removeShip(ship, x, y) {
-        for (let i = 0; i < ship.length; i++) {
-            if (this.blocks[x][y + i] === ship.type) {
-                this.blocks[x][y + i] = 0;
+        if (ship.axis === "x") {
+            for (let i = 0; i < ship.length; i++) {
+                if (this.blocks[x + i][y] === ship.type) {
+                    this.blocks[x + i][y] = 0;
+                }
+                else {
+                    return false;
+                }
             }
+            return true;
         }
-        return true;
+        else {
+            for (let i = 0; i < ship.length; i++) {
+                if (this.blocks[x][y + i] === ship.type) {
+                    this.blocks[x][y + i] = 0;
+                }
+                else {
+                    return false;
+                }
+            }
+            return true;
+        }
+
     }
     receiveAttack(x, y) {
         if (x < 0 || x > this.size || y < 0 || y > this.size) {
