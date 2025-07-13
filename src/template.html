@@ -15,6 +15,27 @@
             <h2>Enemy's Board</h2>
         </div>
     </div>
-  
+    <div class="start-screen">
+        <h1 class="welcome">Welcome to Battleship!</h1>
+        <div class="field">
+            <div class="board start-board"></div>
+            <div class="fleet">
+                <h2>Place Your Ships</h2>
+                <div class="ships">
+                    <div class="ship" draggable="true" data-ship="carrier" data-length="5">Carrier</div>
+                    <div class="ship" draggable="true" data-ship="battleship" data-length="4">Battleship</div>
+                    <div class="ship" draggable="true" data-ship="destroyer" data-length="3">Destroyer</div>
+                    <div class="ship" draggable="true" data-ship="submarine" data-length="3">Submarine</div>
+                    <div class="ship" draggable="true" data-ship="boat1" data-length="2">Boat</div>
+                    <div class="ship" draggable="true" data-ship="boat2" data-length="2">Boat</div>
+                </div>
+                <button id="axis">Change Axis</button>
+            </div>
+        </div>
+        <div class="buttons">
+            <button id="play">Start Game</button>
+            <button id="random">Place Ships Randomly</button>
+        </div>
+    </div>
 </body>
 </html>
