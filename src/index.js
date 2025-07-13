@@ -1,19 +1,16 @@
 import "./styles.css";
-import { generateBoards, setShipUI, makeMoveUI,enableDragAndDrop, enableTouchPlaceShips } from "./components/display";
+import { generateBoards, setShipUI, makeMoveUI,enableShipPlacement, startGame } from "./components/display";
 import Player from "./components/player";
 
 const player= new Player();
 const computer= new Player("computer");
 computer.gameboard.placeRandomly();
 
-const playerBoard = document.querySelector(".player-board");
-const computerBoard= document.querySelector(".computer-board");
 generateBoards(); 
-enableDragAndDrop(player);
-enableTouchPlaceShips(player)
+enableShipPlacement(player)
 
-setShipUI(player.gameboard, playerBoard);
+const computerBoard=document.querySelector(".computer-board");
+makeMoveUI(player, computer, computerBoard);
 setShipUI(computer.gameboard, computerBoard);
 
-makeMoveUI(player, computer, computerBoard);
 
