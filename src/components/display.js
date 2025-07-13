@@ -19,6 +19,7 @@ export function generateBoards() {
             board.appendChild(row);
         }
     });
+    const player=document.querySelector(".player-board");
 }
 
 
@@ -61,10 +62,19 @@ export function makeMoveUI(attacker, receiver, boardContainer) {
                 block.style.backgroundColor = "lightgray";
             }
             block.style.pointerEvents = "none";
-
-            if (success) {
-                computerMoveUI(receiver, attacker);
+            if (receiver.gameboard.allSunk()) {
+                alert("You Won! All Enemy Ships Have Been Sunk");
+                boardContainer.style.pointerEvents = "none";
             }
+            else {
+                if (success) {
+                    computerMoveUI(receiver, attacker);
+                }
+                else{
+                    alert("Move not registered.");
+                }
+            }
+
         });
     });
 }
@@ -86,6 +96,11 @@ function computerMoveUI(attacker, receiver) {
                     }
                 }
             }
+        }
+        if(receiver.gameboard.allSunk()){
+            alert("You Have Lost. The Enemy Has Sunked All Your Ships!");
+            const computer=document.querySelector(".computer-board");
+            computer.style.pointerEvents="none";
         }
     }
 }
