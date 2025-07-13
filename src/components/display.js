@@ -19,7 +19,7 @@ export function generateBoards() {
             board.appendChild(row);
         }
     });
-    const player=document.querySelector(".player-board");
+    const player = document.querySelector(".player-board");
 }
 
 
@@ -70,7 +70,7 @@ export function makeMoveUI(attacker, receiver, boardContainer) {
                 if (success) {
                     computerMoveUI(receiver, attacker);
                 }
-                else{
+                else {
                     alert("Move not registered.");
                 }
             }
@@ -97,11 +97,73 @@ function computerMoveUI(attacker, receiver) {
                 }
             }
         }
-        if(receiver.gameboard.allSunk()){
+        if (receiver.gameboard.allSunk()) {
             alert("You Have Lost. The Enemy Has Sunked All Your Ships!");
-            const computer=document.querySelector(".computer-board");
-            computer.style.pointerEvents="none";
+            const computer = document.querySelector(".computer-board");
+            computer.style.pointerEvents = "none";
         }
     }
 }
+export function enableDragAndDrop(player) {
+    let draggedShip = null;
+    let draggedShipLength = 0;
+    let draggedShipType = "";
+    let axis = "x";
 
+    document.querySelectorAll(".ship").forEach(ship => {
+        ship.addEventListener("dragstart", () => {
+            draggedShip = ship;
+            draggedShipType = ship.dataset.ship;
+            draggedShipLength = parseInt(ship.dataset.length);
+            ship.classList.add("dragging");
+        });
+
+        ship.addEventListener("dragend", () => {
+            draggedShip = null;
+            draggedShipType = "";
+            draggedShipLength = 0;
+            ship.classList.remove("dragging");
+        });
+    });
+
+    document.getElementById("axis").addEventListener("click", () => {
+        axis = axis === "x" ? "y" : "x";
+        if (draggedShipType) {
+            player.gameboard[draggedShipType].axis = axis;
+        }
+    });
+
+    const startBoard = document.querySelector(".start-board");
+    startBoard.querySelectorAll(".block").forEach(block => {
+        block.addEventListener("dragover", (e) => {
+            e.preventDefault();
+        });
+
+        block.addEventListener("drop", () => {
+            const x = parseInt(block.dataset.x);
+            const y = parseInt(block.dataset.y);
+
+            player.gameboard[draggedShipType].axis = axis;
+
+            const placed = player.gameboard.placeShip(player.gameboard[draggedShipType], x, y);
+            if (placed) {
+                for (let i = 0; i < draggedShipLength; i++) {
+                    let selector = "";
+                    if (axis === "x") {
+                        selector = `.block[data-x="${x + i}"][data-y="${y}"]`;
+                    } else {
+                        selector = `.block[data-x="${x}"][data-y="${y + i}"]`;
+                    }
+                    const cell = startBoard.querySelector(selector);
+                    if (cell) {
+                        cell.style.backgroundColor = "yellow";
+                    }
+                }
+
+                draggedShip.remove();
+            } else {
+                alert("Invalid placement");
+            }
+        });
+    });
+}
