@@ -1,8 +1,8 @@
 import Player from "../components/player";
 
-test("Player gameboards initialize correctly",()=>{
+test("Computer places random move",()=>{
     const player= new Player();
     const computer= new Player("computer");
     expect(computer.makeMove(player.gameboard)).toBe(true);
    
-})
+});

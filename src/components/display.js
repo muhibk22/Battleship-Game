@@ -109,20 +109,20 @@ export function enableShipPlacement(player) {
     let selectedShipLength = 0;
     let axis = "x";
     let placeCount = 0;
-
     const ships = document.querySelectorAll(".ship");
     const startBoard = document.querySelector(".start-board");
     const startButton = document.getElementById("play");
     const resetShipButton = document.getElementById("reset");
     const randomButton = document.getElementById("random");
     const axisButton = document.getElementById("axis");
+    const blocks = startBoard.querySelectorAll(".block");
 
     startButton.disabled = true;
     startButton.style.backgroundColor = "gray";
 
+
     ships.forEach(ship => {
         ship.addEventListener("click", () => selectShip(ship));
-
         ship.addEventListener("dragstart", () => selectShip(ship));
         ship.addEventListener("dragend", clearSelection);
     });
@@ -152,7 +152,9 @@ export function enableShipPlacement(player) {
         }
     });
 
-    startBoard.querySelectorAll(".block").forEach(block => {
+    blocks.forEach(block => {
+        block.addEventListener("mouseenter", () => { handleHover(blocks, block) });
+        block.addEventListener("mouseleave", () => { handleHoverLeave(blocks, block) });
         //for touch
         block.addEventListener("click", () => handlePlacement(block));
 
@@ -161,6 +163,55 @@ export function enableShipPlacement(player) {
         block.addEventListener("drop", () => handlePlacement(block));
     });
 
+    function handleHover(blocks, block) {
+        const x = parseInt(block.dataset.x);
+        const y = parseInt(block.dataset.y);
+        if (selectedShip !== null) {
+            if (axis === "x") {
+                blocks.forEach(blockk => {
+                    const dx = parseInt(blockk.dataset.x);
+                    const dy = parseInt(blockk.dataset.y);
+                    if ((dx <= x + selectedShipLength && dx >= x) && dy === y && blockk.dataset.occupied !=="true") {
+                        blockk.style.backgroundColor = "pink";
+                    }
+                });
+            }
+            else {
+                blocks.forEach(blockk => {
+                    const dx = parseInt(blockk.dataset.x);
+                    const dy = parseInt(blockk.dataset.y);
+                    if ((dy <= y + selectedShipLength && dy >= y) && dx === x && blockk.dataset.occupied !=="true") {
+                        blockk.style.backgroundColor = "pink";
+                    }
+                });
+            }
+        }
+    }
+
+    function handleHoverLeave(blocks, block) {
+        const x = parseInt(block.dataset.x);
+        const y = parseInt(block.dataset.y);
+        if (selectedShip !== null) {
+            if (axis === "x") {
+                blocks.forEach(blockk => {
+                    const dx = parseInt(blockk.dataset.x);
+                    const dy = parseInt(blockk.dataset.y);
+                    if ((dx <= x + selectedShipLength && dx >= x) && dy === y && blockk.dataset.occupied !=="true") {
+                        blockk.style.backgroundColor = "rgb(149, 229, 225)";
+                    }
+                });
+            }
+            else {
+                blocks.forEach(blockk => {
+                    const dx = parseInt(blockk.dataset.x);
+                    const dy = parseInt(blockk.dataset.y);
+                    if ((dy <= y + selectedShipLength && dy >= y) && dx === x && blockk.dataset.occupied !=="true") {
+                        blockk.style.backgroundColor = "rgb(149, 229, 225)";
+                    }
+                });
+            }
+        }
+    }
     function handlePlacement(block) {
         if (!selectedShip) {
             return;
@@ -174,16 +225,32 @@ export function enableShipPlacement(player) {
         const placed = player.gameboard.placeShip(player.gameboard[selectedShipType], x, y);
 
         if (placed) {
-            highlightBlocks(x, y);
             selectedShip.remove();
+            selectedShip = null;
+            highlightBlocks(x, y);
             clearSelection();
+            blocks.forEach(blockk => {
+                const dx = parseInt(blockk.dataset.x);
+                const dy = parseInt(blockk.dataset.y);
+
+                if (axis === "x") {
+                    if (dx >= x && dx < x + selectedShipLength && dy === y) {
+                        blockk.dataset.occupied = "true";
+                    }
+                } else {
+                    if (dy >= y && dy < y + selectedShipLength && dx === x) {
+                        blockk.dataset.occupied = "true";
+                    }
+                }
+            });
 
             placeCount++;
             if (placeCount >= 6) {
                 startButton.disabled = false;
-                startButton.style.backgroundColor = "pink";
+                startButton.style.backgroundColor = "black";
             }
-        } else {
+        }
+        else {
             alert("Invalid placement");
         }
     }
@@ -221,7 +288,8 @@ export function enableShipPlacement(player) {
     randomButton.addEventListener("click", () => {
         placeRandomUI(player);
         startButton.disabled = false;
-        startButton.style.backgroundColor = "pink";
+        startButton.style.backgroundColor = "black";
+        selectedShip=null;
     });
 }
 
@@ -279,6 +347,7 @@ function placeRandomUI(player) {
                 const cell = board.querySelector(`.block[data-x="${x}"][data-y="${y}"]`);
                 if (cell) {
                     cell.style.backgroundColor = "yellow";
+                    cell.dataset.occupied="true";
                 }
             }
         }
