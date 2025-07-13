@@ -19,26 +19,24 @@ export function generateBoards() {
             board.appendChild(row);
         }
     });
-    const player = document.querySelector(".player-board");
 }
 
-
 export function setShipUI(gameboard, boardContainer) {
-    for (let x = 0; x < gameboard.size; x++) {
-        for (let y = 0; y < gameboard.size; y++) {
-            const cellValue = gameboard.blocks[x][y];
+    const size = gameboard.size;
+    const grid = gameboard.blocks;
 
-            const isShip = typeof cellValue === "string" && ["carrier", "battleship", "destroyer", "submarine", "boat1", "boat2"].includes(cellValue);
-
-            if (isShip) {
-                const block = boardContainer.querySelector(`.block[data-x="${x}"][data-y="${y}"]`);
-                if (block) {
-                    block.classList.add("placed");
+    for (let x = 0; x < size; x++) {
+        for (let y = 0; y < size; y++) {
+            if (typeof grid[x][y] === "string") {
+                const cell = boardContainer.querySelector(`.block[data-x="${x}"][data-y="${y}"]`);
+                if (cell) {
+                    cell.style.backgroundColor = "yellow";
                 }
             }
         }
     }
 }
+
 
 export function makeMoveUI(attacker, receiver, boardContainer) {
     const blocks = boardContainer.querySelectorAll(".block");
@@ -104,11 +102,19 @@ function computerMoveUI(attacker, receiver) {
         }
     }
 }
+
 export function enableDragAndDrop(player) {
     let draggedShip = null;
     let draggedShipLength = 0;
     let draggedShipType = "";
     let axis = "x";
+    const startButton = document.getElementById("play");
+    startButton.addEventListener("click", () => {
+        startGame(player);
+    });
+    startButton.style.backgroundColor="blue";
+    startButton.disabled = true;
+    let placeCount = 3;
 
     document.querySelectorAll(".ship").forEach(ship => {
         ship.addEventListener("dragstart", () => {
@@ -147,6 +153,8 @@ export function enableDragAndDrop(player) {
 
             const placed = player.gameboard.placeShip(player.gameboard[draggedShipType], x, y);
             if (placed) {
+                placeCount++;
+                console.log(placeCount);
                 for (let i = 0; i < draggedShipLength; i++) {
                     let selector = "";
                     if (axis === "x") {
@@ -160,7 +168,13 @@ export function enableDragAndDrop(player) {
                     }
                 }
                 draggedShip.remove();
-            } else {
+                if (placeCount >= 2) {
+                    startButton.disabled = false;
+                    startButton.style.backgroundColor = "pink";
+                }
+            }
+
+            else {
                 alert("Invalid placement");
             }
         });
@@ -169,10 +183,13 @@ export function enableDragAndDrop(player) {
     const randomButton = document.getElementById("random");
     randomButton.addEventListener("click", () => {
         placeRandomUI(player);
+        startButton.disabled=false;
     });
 
     const resetShipButton = document.getElementById("reset");
     resetShipButton.addEventListener("click", () => {
+        startButton.disabled=true;
+        placeCount=0;
         resetShipUI(player);
     });
 }
@@ -182,12 +199,12 @@ function resetShipUI(player) {
     const shipContainer = document.querySelector(".ships");
     shipContainer.innerHTML = "";
     const ships = [
-        { display: "Carrier",name: "carrier", length: 5 },
-        { display: "Battleship",name: "battleship", length: 4 },
-        { display: "Destroyer",name: "destroyer", length: 3 },
-        { display: "Submarine",name: "submarine", length: 3 },
-        { display: "Boat",name: "boat1", length: 2 },
-        { display: "Boat",name: "boat2", length: 2 }
+        { display: "Carrier", name: "carrier", length: 5 },
+        { display: "Battleship", name: "battleship", length: 4 },
+        { display: "Destroyer", name: "destroyer", length: 3 },
+        { display: "Submarine", name: "submarine", length: 3 },
+        { display: "Boat", name: "boat1", length: 2 },
+        { display: "Boat", name: "boat2", length: 2 }
     ];
     ships.forEach(({ display, name, length }) => {
         const shipEl = document.createElement("div");
@@ -299,4 +316,13 @@ export function enableTouchPlaceShips(player) {
             player.gameboard[selectedShipType].axis = axis;
         }
     });
+}
+
+export function startGame(player) {
+    document.querySelector(".start-screen").style.display = "none";
+    document.querySelector(".container").style.display = "flex";
+    const playerBoard = document.querySelector(".player-board");
+    setShipUI(player.gameboard, playerBoard);
+
+
 }
