@@ -159,11 +159,144 @@ export function enableDragAndDrop(player) {
                         cell.style.backgroundColor = "yellow";
                     }
                 }
-
                 draggedShip.remove();
             } else {
                 alert("Invalid placement");
             }
         });
+    });
+
+    const randomButton = document.getElementById("random");
+    randomButton.addEventListener("click", () => {
+        placeRandomUI(player);
+    });
+
+    const resetShipButton = document.getElementById("reset");
+    resetShipButton.addEventListener("click", () => {
+        resetShipUI(player);
+    });
+}
+
+function resetShipUI(player) {
+    player.gameboard = new Gameboard();
+    const shipContainer = document.querySelector(".ships");
+    shipContainer.innerHTML = "";
+    const ships = [
+        { display: "Carrier",name: "carrier", length: 5 },
+        { display: "Battleship",name: "battleship", length: 4 },
+        { display: "Destroyer",name: "destroyer", length: 3 },
+        { display: "Submarine",name: "submarine", length: 3 },
+        { display: "Boat",name: "boat1", length: 2 },
+        { display: "Boat",name: "boat2", length: 2 }
+    ];
+    ships.forEach(({ display, name, length }) => {
+        const shipEl = document.createElement("div");
+        shipEl.classList.add("ship");
+        shipEl.setAttribute("data-ship", name);
+        shipEl.setAttribute("data-length", length);
+        shipEl.textContent = display;
+        shipContainer.appendChild(shipEl);
+    });
+
+    const blocks = document.querySelectorAll(".start-board .block");
+    blocks.forEach(block => {
+        block.style.backgroundColor = "";
+        const visited = block.querySelector(".visited");
+        if (visited) visited.remove();
+    });
+
+    enableDragAndDrop(player);
+    enableTouchPlaceShips(player);
+}
+function placeRandomUI(player) {
+    const board = document.querySelector(".start-board");
+    const blocks = board.querySelectorAll(".block");
+
+    blocks.forEach(block => {
+        block.style.backgroundColor = "";
+        const visited = block.querySelector(".visited");
+        if (visited) visited.remove();
+    });
+
+    player.gameboard = new Gameboard();
+    player.gameboard.placeRandomly();
+
+    const size = player.gameboard.size;
+    const grid = player.gameboard.blocks;
+
+    for (let x = 0; x < size; x++) {
+        for (let y = 0; y < size; y++) {
+            if (typeof grid[x][y] === "string") {
+                const cell = board.querySelector(`.block[data-x="${x}"][data-y="${y}"]`);
+                if (cell) {
+                    cell.style.backgroundColor = "yellow";
+                }
+            }
+        }
+    }
+    document.querySelectorAll(".ship").forEach(ship => {
+        ship.remove();
+    });
+}
+export function enableTouchPlaceShips(player) {
+    let selectedShip = null;
+    let selectedShipType = "";
+    let selectedShipLength = 0;
+    let axis = "x";
+
+    const ships = document.querySelectorAll(".ship");
+    const board = document.querySelector(".start-board");
+
+    ships.forEach(ship => {
+        ship.addEventListener("click", () => {
+            selectedShip = ship;
+            selectedShipType = ship.dataset.ship;
+            selectedShipLength = parseInt(ship.dataset.length);
+            player.gameboard[selectedShipType].axis = axis;
+
+            ships.forEach(s => s.classList.remove("selected"));
+            ship.classList.add("selected");
+        });
+    });
+
+    board.querySelectorAll(".block").forEach(block => {
+        block.addEventListener("click", () => {
+            if (!selectedShip) return;
+
+            const x = parseInt(block.dataset.x);
+            const y = parseInt(block.dataset.y);
+
+            const placed = player.gameboard.placeShip(
+                player.gameboard[selectedShipType],
+                x, y
+            );
+
+            if (placed) {
+                for (let i = 0; i < selectedShipLength; i++) {
+                    let selector = "";
+                    if (axis === "x") {
+                        selector = `.block[data-x="${x + i}"][data-y="${y}"]`;
+                    } else {
+                        selector = `.block[data-x="${x}"][data-y="${y + i}"]`;
+                    }
+                    const cell = board.querySelector(selector);
+                    if (cell) cell.style.backgroundColor = "yellow";
+                }
+
+                selectedShip.remove();
+                selectedShip = null;
+                selectedShipType = "";
+                selectedShipLength = 0;
+            } else {
+                alert("Invalid placement");
+            }
+        });
+    });
+
+    document.getElementById("axis").addEventListener("click", () => {
+        axis = axis === "x" ? "y" : "x";
+        if (selectedShipType) {
+            player.gameboard[selectedShipType].axis = axis;
+        }
     });
 }

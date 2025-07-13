@@ -1,5 +1,5 @@
 import "./styles.css";
-import { generateBoards, setShipUI, makeMoveUI,enableDragAndDrop } from "./components/display";
+import { generateBoards, setShipUI, makeMoveUI,enableDragAndDrop, enableTouchPlaceShips } from "./components/display";
 import Player from "./components/player";
 
 const player= new Player();
@@ -10,6 +10,7 @@ const playerBoard = document.querySelector(".player-board");
 const computerBoard= document.querySelector(".computer-board");
 generateBoards(); 
 enableDragAndDrop(player);
+enableTouchPlaceShips(player)
 
 setShipUI(player.gameboard, playerBoard);
 setShipUI(computer.gameboard, computerBoard);

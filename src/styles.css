@@ -147,6 +147,15 @@ button:hover{
   background-color: yellow;
 }
 
+.selected{
+    background-color:rgb(47, 164, 203); ;
+}
+
+.hover-highlight {
+    background-color: rgba(255, 255, 0, 0.6); 
+}
+
+
 @media (max-width: 1024px) {
 
 
@@ -161,6 +170,7 @@ button:hover{
     justify-content: space-evenly;
     width: 100%;
     flex-wrap: wrap;
+    gap: 5px;
   }
   .fleet{
     min-width: 90%;
