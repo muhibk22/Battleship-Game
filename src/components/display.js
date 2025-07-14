@@ -323,11 +323,45 @@ function resetShipUI(player) {
         block.classList.remove("visited")
         block.dataset.occupied = "false";
     });
-    
-    const startBoard = document.querySelector(".start-board");
-    startBoard.innerHTML = "";
+
     generateBoards();
+    createButtons();
     enableShipPlacement(player);
+}
+
+function createButtons() {
+    const buttons = document.querySelector(".buttons");
+    const shipButtons = document.querySelector(".ship-buttons");
+    buttons.innerHTML = "";
+    shipButtons.innerHTML = "";
+
+    const startButton = document.createElement("button");
+    startButton.id = "play";
+    startButton.textContent = "Start Game";
+    startButton.classList.add("button");
+
+    const randomButton = document.createElement("button");
+    randomButton.id = "random";
+    randomButton.textContent = "Place Ships Randomly";
+    randomButton.classList.add("button");
+
+
+    buttons.appendChild(startButton);
+    buttons.appendChild(randomButton);
+
+    const resetButton = document.createElement("button");
+    resetButton.id = "reset";
+    resetButton.textContent = "Reset Ships";
+    resetButton.classList.add("button");
+
+
+    const axisButton = document.createElement("button");
+    axisButton.id = "axis";
+    axisButton.textContent = "Change Axis";
+    axisButton.classList.add("button");
+
+    shipButtons.appendChild(axisButton);
+    shipButtons.appendChild(resetButton);
 }
 
 function placeRandomUI(player) {
