@@ -1,5 +1,5 @@
 import "./styles.css";
-import { generateBoards, setShipUI, makeMoveUI,enableShipPlacement, startGame } from "./components/display";
+import { generateBoards, setShipUI, makeMoveUI,enableShipPlacement, playAgain } from "./components/display";
 import Player from "./components/player";
 
 const player= new Player();

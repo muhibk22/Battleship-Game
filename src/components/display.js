@@ -61,8 +61,8 @@ export function makeMoveUI(attacker, receiver, boardContainer) {
             }
             block.style.pointerEvents = "none";
             if (receiver.gameboard.allSunk()) {
-                alert("You Won! All Enemy Ships Have Been Sunk");
-                boardContainer.style.pointerEvents = "none";
+                const win = true;
+                displayWinStatus(win);
             }
             else {
                 if (success) {
@@ -74,6 +74,50 @@ export function makeMoveUI(attacker, receiver, boardContainer) {
             }
 
         });
+    });
+}
+function displayWinStatus(win) {
+    const playArea = document.querySelector(".play-area");
+    const card = document.querySelector(".card");
+
+    playArea.classList.add("blurred");
+    card.style.display = "block";
+    let msg = "";
+    if (win) {
+        msg = "<h3>You Win! All Enemy Ships Have Been Sunk.</h3>"
+    }
+    else {
+        msg = "<h3>You Lose! The Enemy Has Sunk All Your Ships</h3>"
+    }
+    const msgEl = document.querySelector(".message");
+    msgEl.innerHTML = msg;
+    playAgain();
+}
+
+
+export function playAgain() {
+    const playAgain = document.getElementById("play-again");
+    playAgain.addEventListener("click", () => {
+        const container = document.querySelector(".container");
+        const card = document.querySelector(".card");
+        const playArea = document.querySelector(".play-area");
+
+        container.style.display = "none";
+        card.style.display = "none";
+        playArea.classList.remove("blurred");
+
+        const startScreen = document.querySelector(".start-screen");
+        startScreen.style.display = "flex";
+        const player = new Player();
+        const computer = new Player("computer");
+        computer.gameboard.placeRandomly();
+        generateBoards();
+        createButtons();
+        enableShipPlacement(player);
+        const computerBoard = document.querySelector(".computer-board");
+    
+        makeMoveUI(player, computer, computerBoard)
+        setShipUI(computer.gameboard, computerBoard);
     });
 }
 
@@ -96,7 +140,8 @@ function computerMoveUI(attacker, receiver) {
             }
         }
         if (receiver.gameboard.allSunk()) {
-            alert("You Have Lost. The Enemy Has Sunked All Your Ships!");
+            const win = false;
+            displayWinStatus(win);
             const computer = document.querySelector(".computer-board");
             computer.style.pointerEvents = "none";
         }
