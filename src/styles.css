@@ -220,6 +220,21 @@ button:hover{
   }
 }
 
+@media (max-width:768px){
+    .play-area{
+        flex-direction: column;
+        min-height: 80dvh;
+        text-align: center;
+        font-size: 12px;
+    }
+    .heading{
+        font-size: 20px;
+    }
+    .player-1, .player-2{
+        width: 70%;
+    }
+}
+
 @media (max-width:425px){
     body{
         font-size: 0.7rem;
