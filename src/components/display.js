@@ -171,7 +171,7 @@ export function enableShipPlacement(player) {
                 blocks.forEach(blockk => {
                     const dx = parseInt(blockk.dataset.x);
                     const dy = parseInt(blockk.dataset.y);
-                    if ((dx <= x + selectedShipLength && dx >= x) && dy === y && blockk.dataset.occupied !=="true") {
+                    if ((dx < x + selectedShipLength && dx >= x) && dy === y && blockk.dataset.occupied !== "true") {
                         blockk.style.backgroundColor = "pink";
                     }
                 });
@@ -180,7 +180,7 @@ export function enableShipPlacement(player) {
                 blocks.forEach(blockk => {
                     const dx = parseInt(blockk.dataset.x);
                     const dy = parseInt(blockk.dataset.y);
-                    if ((dy <= y + selectedShipLength && dy >= y) && dx === x && blockk.dataset.occupied !=="true") {
+                    if ((dy < y + selectedShipLength && dy >= y) && dx === x && blockk.dataset.occupied !== "true") {
                         blockk.style.backgroundColor = "pink";
                     }
                 });
@@ -196,7 +196,7 @@ export function enableShipPlacement(player) {
                 blocks.forEach(blockk => {
                     const dx = parseInt(blockk.dataset.x);
                     const dy = parseInt(blockk.dataset.y);
-                    if ((dx <= x + selectedShipLength && dx >= x) && dy === y && blockk.dataset.occupied !=="true") {
+                    if ((dx < x + selectedShipLength && dx >= x) && dy === y && blockk.dataset.occupied !== "true") {
                         blockk.style.backgroundColor = "rgb(149, 229, 225)";
                     }
                 });
@@ -205,7 +205,7 @@ export function enableShipPlacement(player) {
                 blocks.forEach(blockk => {
                     const dx = parseInt(blockk.dataset.x);
                     const dy = parseInt(blockk.dataset.y);
-                    if ((dy <= y + selectedShipLength && dy >= y) && dx === x && blockk.dataset.occupied !=="true") {
+                    if ((dy < y + selectedShipLength && dy >= y) && dx === x && blockk.dataset.occupied !== "true") {
                         blockk.style.backgroundColor = "rgb(149, 229, 225)";
                     }
                 });
@@ -228,22 +228,23 @@ export function enableShipPlacement(player) {
             selectedShip.remove();
             selectedShip = null;
             highlightBlocks(x, y);
-            clearSelection();
             blocks.forEach(blockk => {
                 const dx = parseInt(blockk.dataset.x);
                 const dy = parseInt(blockk.dataset.y);
-
+                console.log(selectedShipLength);
                 if (axis === "x") {
                     if (dx >= x && dx < x + selectedShipLength && dy === y) {
                         blockk.dataset.occupied = "true";
                     }
-                } else {
+                }
+                else {
                     if (dy >= y && dy < y + selectedShipLength && dx === x) {
                         blockk.dataset.occupied = "true";
                     }
                 }
             });
 
+            clearSelection();
             placeCount++;
             if (placeCount >= 6) {
                 startButton.disabled = false;
@@ -252,6 +253,7 @@ export function enableShipPlacement(player) {
         }
         else {
             alert("Invalid placement");
+            return;
         }
     }
 
@@ -277,11 +279,11 @@ export function enableShipPlacement(player) {
 
     //reset
     resetShipButton.addEventListener("click", () => {
+        clearSelection();
         resetShipUI(player);
         placeCount = 0;
         startButton.disabled = true;
         startButton.style.backgroundColor = "gray";
-        enableShipPlacement(player);
     });
 
     // random placement
@@ -289,13 +291,13 @@ export function enableShipPlacement(player) {
         placeRandomUI(player);
         startButton.disabled = false;
         startButton.style.backgroundColor = "black";
-        selectedShip=null;
+        selectedShip = null;
     });
 }
 
 
 function resetShipUI(player) {
-    player.gameboard = new Gameboard();
+    player = new Player();
     const shipContainer = document.querySelector(".ships");
     shipContainer.innerHTML = "";
     const ships = [
@@ -318,10 +320,13 @@ function resetShipUI(player) {
     const blocks = document.querySelectorAll(".start-board .block");
     blocks.forEach(block => {
         block.style.backgroundColor = "";
-        const visited = block.querySelector(".visited");
-        if (visited) visited.remove();
+        block.classList.remove("visited")
+        block.dataset.occupied = "false";
     });
-
+    
+    const startBoard = document.querySelector(".start-board");
+    startBoard.innerHTML = "";
+    generateBoards();
     enableShipPlacement(player);
 }
 
@@ -347,7 +352,7 @@ function placeRandomUI(player) {
                 const cell = board.querySelector(`.block[data-x="${x}"][data-y="${y}"]`);
                 if (cell) {
                     cell.style.backgroundColor = "yellow";
-                    cell.dataset.occupied="true";
+                    cell.dataset.occupied = "true";
                 }
             }
         }
