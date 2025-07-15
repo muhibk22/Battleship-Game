@@ -224,7 +224,7 @@ export default class GameUI {
                         const dx = parseInt(blockk.dataset.x);
                         const dy = parseInt(blockk.dataset.y);
                         if ((dx < x + selectedShipLength && dx >= x) && dy === y && blockk.dataset.occupied !== "true") {
-                            blockk.style.backgroundColor = "pink";
+                            blockk.style.backgroundColor = "grey";
                         }
                     });
                 }
@@ -233,7 +233,7 @@ export default class GameUI {
                         const dx = parseInt(blockk.dataset.x);
                         const dy = parseInt(blockk.dataset.y);
                         if ((dy < y + selectedShipLength && dy >= y) && dx === x && blockk.dataset.occupied !== "true") {
-                            blockk.style.backgroundColor = "pink";
+                            blockk.style.backgroundColor = "grey";
                         }
                     });
                 }
@@ -452,7 +452,6 @@ export default class GameUI {
         document.querySelector(".start-screen").style.display = "none";
         document.querySelector(".container").style.display = "flex";
         this.setShipUI(this.player.gameboard, this.playerBoard);
-        this.setShipUI(this.computer.gameboard, this.computerBoard);
         this.makeMoveUI(this.player, this.computer, this.computerBoard);
 
     }
