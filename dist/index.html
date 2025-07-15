@@ -1,0 +1,52 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battleship</title>
+<script defer src="main.js"></script></head>
+<body>
+    <div class="container">    
+        <div class="heading"><h1>Battleship</h1></div>
+        <div class="play-area" >
+            <div class="player-1">
+                <div class="board player-board"></div>
+                <h2>Your Board</h2>
+            </div>
+            <div class="player-2">
+                <div class="board computer-board"></div>
+                <h2>Enemy's Board</h2>
+            </div>
+        </div>
+        <div class="card">
+            <div class="message"></div>
+            <button id="play-again" class="button">Play Again</button>
+        </div>
+    </div>
+    <div class="start-screen">
+        <h1 class="welcome">Welcome to Battleship!</h1>
+        <div class="field">
+            <div class="board start-board"></div>
+            <div class="fleet">
+                <h2>Place Your Ships</h2>
+                <div class="ships">
+                    <div class="ship" draggable="true" data-ship="carrier" data-length="5">Carrier</div>
+                    <div class="ship" draggable="true" data-ship="battleship" data-length="4">Battleship</div>
+                    <div class="ship" draggable="true" data-ship="destroyer" data-length="3">Destroyer</div>
+                    <div class="ship" draggable="true" data-ship="submarine" data-length="3">Submarine</div>
+                    <div class="ship" draggable="true" data-ship="boat1" data-length="2">Boat</div>
+                    <div class="ship" draggable="true" data-ship="boat2" data-length="2">Boat</div>
+                </div>
+                <div class="ship-buttons">
+                    <button id="axis" class="button">Change Axis</button>
+                    <button id="reset" class="button">Reset Ships</button>
+                </div>
+                
+            </div>
+        </div>
+        <div class="buttons">
+            <button id="play" class="button">Start Game</button>
+            <button id="random" class="button">Place Ships Randomly</button>
+        </div>
+    </div>
+</body>
+</html>
