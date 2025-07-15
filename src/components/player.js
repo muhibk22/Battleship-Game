@@ -62,8 +62,10 @@ export default class Player {
             while (!found) {
                 this.x = Math.floor(Math.random() * 10);
                 this.y = Math.floor(Math.random() * 10);
-
-                if ((this.x + this.y) % 2 !== 0) {
+                if (this.visited.length>=50 && this.isValid()){
+                    return board.receiveAttack(this.x, this.y);
+                }
+                if ((this.x + this.y) %  2!== 0) {
                     continue;
                 }
 
