@@ -13,6 +13,7 @@ export default class Player {
         this.y = 0;
         this.firstHit = false;
         this.secondHit = false;
+        this.attempts=0;
     }
     makeRandom(board) {
         let isValid = false;
@@ -68,8 +69,9 @@ export default class Player {
         }
 
 
-        if (!this.firstHit) {
+        if (!this.firstHit ||this.attempts>10) {
             console.log(targetSize);
+            this.attempts=0;
             let found = false;
             while (!found) {
                 this.x = Math.floor(Math.random() * 10);
@@ -120,6 +122,7 @@ export default class Player {
             } else {
                 this.secondHit = false;
                 this.currentMove++;
+                this.attempts++;
                 return this.makeMove(board);
             }
         }
@@ -130,6 +133,7 @@ export default class Player {
                 this.secondHit = false;
                 this.lastHit = [...this.initialHit];
                 this.currentMove = 0;
+                this.attempts++;
                 return this.makeMove(board);
             }
 
@@ -138,6 +142,7 @@ export default class Player {
 
             if (!this.isValid() || this.moveMade()) {
                 this.currentMove++;
+                this.attempts++;
                 return this.makeMove(board);
             }
 
