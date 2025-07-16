@@ -56,24 +56,38 @@ export default class Player {
             this.currentMove = 0;
             this.lastHit = [];
         }
+        let targetSize = 2;
+        if (!board.carrier.isSunk()) {
+            targetSize = 5;
+        }
+        else if (!board.battleship.isSunk()) {
+            targetSize = 4;
+        }
+        else if (!board.destroyer.isSunk() || !board.submarine.isSunk()) {
+            targetSize = 3;
+        }
+
 
         if (!this.firstHit) {
+            console.log(targetSize);
             let found = false;
             while (!found) {
                 this.x = Math.floor(Math.random() * 10);
                 this.y = Math.floor(Math.random() * 10);
-                if (this.visited.length>=50 && this.isValid()){
-                    return board.receiveAttack(this.x, this.y);
+                if (this.visited.length >= 50 && this.isValid() && !this.moveMade()) {
+                    found= true;
                 }
-                if ((this.x + this.y) %  2!== 0) {
-                    continue;
+                else {
+                    if ((this.x + this.y) % targetSize !== 0) {
+                        continue;
+                    }
+
+                    if (!this.moveMade()) {
+                        found = true;
+                    }
                 }
 
-                if (!this.moveMade()) {
-                    found = true;
-                }
             }
-
             board.receiveAttack(this.x, this.y);
             this.visited.push([this.x, this.y]);
 
@@ -96,7 +110,7 @@ export default class Player {
 
                 if (board.lastHit) {
                     this.lastHit = [this.x, this.y];
-                } 
+                }
                 else {
                     this.secondHit = false;
                     this.currentMove++;
@@ -114,7 +128,7 @@ export default class Player {
             if (this.currentMove >= 4) {
                 this.firstHit = true;
                 this.secondHit = false;
-                this.lastHit=[...this.initialHit];
+                this.lastHit = [...this.initialHit];
                 this.currentMove = 0;
                 return this.makeMove(board);
             }
@@ -133,7 +147,7 @@ export default class Player {
             if (board.lastHit) {
                 this.secondHit = true;
                 this.lastHit = [this.x, this.y];
-            } 
+            }
             else {
                 this.currentMove++;
             }
