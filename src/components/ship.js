@@ -4,6 +4,8 @@ export default class Ship{
         this.hits=0;
         this.type=type;
         this.axis="x";
+        this.x=null;
+        this.y=null;
     }
 
     hit(){

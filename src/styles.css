@@ -75,7 +75,7 @@ body{
     width: 10%;
     height: auto;
     background-color: rgb(149, 229, 225);
-    border:1px solid blue;
+    margin: 1px;
     aspect-ratio: 1/1;
     cursor: pointer;
     transition: background-color 0.15s;
@@ -107,9 +107,6 @@ body{
     display: flex;
 }
 
-.block.placed {
-  background-color: yellow;
-}
 
 .start-screen{
     width: 80%;

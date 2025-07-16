@@ -57,13 +57,13 @@ export default class Player {
             this.lastHit = [];
         }
         let targetSize = 2;
-        if (!board.carrier.isSunk()) {
+        if (!board.carrier.isSunk() && this.visited.length<=20) {
             targetSize = 5;
         }
-        else if (!board.battleship.isSunk()) {
+        else if (!board.battleship.isSunk() && this.visited <=25) {
             targetSize = 4;
         }
-        else if (!board.destroyer.isSunk() || !board.submarine.isSunk()) {
+        else if ((!board.destroyer.isSunk() || !board.submarine.isSunk()) && (this.visited.length<=33)) {
             targetSize = 3;
         }
 

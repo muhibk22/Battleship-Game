@@ -1,6 +1,26 @@
 import Player from "./player";
 import Gameboard from "./gameboard";
 
+import carrier1 from '../assets/carrier/carrier1.png';
+import carrier2 from '../assets/carrier/carrier2.png';
+import carrier3 from '../assets/carrier/carrier3.png';
+import carrier4 from '../assets/carrier/carrier4.png';
+import carrier5 from '../assets/carrier/carrier5.png';
+import battleship1 from '../assets/battleship/battleship1.png';
+import battleship2 from '../assets/battleship/battleship2.png';
+import battleship3 from '../assets/battleship/battleship3.png';
+import battleship4 from '../assets/battleship/battleship4.png';
+import destroyer1 from '../assets/destroyer/destroyer1.png';
+import destroyer2 from '../assets/destroyer/destroyer2.png';
+import destroyer3 from '../assets/destroyer/destroyer3.png';
+import submarine1 from '../assets/submarine/submarine1.png';
+import submarine2 from '../assets/submarine/submarine2.png';
+import submarine3 from '../assets/submarine/submarine3.png';
+import boat1 from '../assets/boat/boat1.png';
+import boat2 from '../assets/boat/boat2.png';
+
+const shipImages = [[carrier1, carrier2, carrier3, carrier4, carrier5], [battleship1, battleship2, battleship3, battleship4],
+[destroyer1, destroyer2, destroyer3], [submarine1, submarine2, submarine3], [boat1, boat2], [boat1, boat2]];
 
 
 export default class GameUI {
@@ -47,18 +67,37 @@ export default class GameUI {
     }
 
     setShipUI(gameboard, boardContainer) {
-        const size = gameboard.size;
-        const grid = gameboard.blocks;
+        const ships = [gameboard.carrier, gameboard.battleship, gameboard.destroyer, gameboard.submarine, gameboard.boat1, gameboard.boat2];
+        let img = 0;
+        for (const ship of ships) {
+            const length = ship.length;
+            const axis = ship.axis;
 
-        for (let x = 0; x < size; x++) {
-            for (let y = 0; y < size; y++) {
-                if (typeof grid[x][y] === "string") {
-                    const cell = boardContainer.querySelector(`.block[data-x="${x}"][data-y="${y}"]`);
+            for (let i = 0; i < length; i++) {
+                if (axis === "x") {
+                    const cell = boardContainer.querySelector(`.block[data-x="${ship.x + i}"][data-y="${ship.y}"]`);
                     if (cell) {
-                        cell.style.backgroundColor = "yellow";
+                        cell.style.backgroundImage = `url(${shipImages[img][i]})`;
+                        cell.style.transform = 'rotate(90deg)';
+                        cell.style.transformOrigin = 'center';
+                        cell.style.backgroundSize = 'cover';
+                        cell.style.backgroundPosition = 'center';
+                        cell.dataset.occupied = "true";
+                    }
+                }
+                else if (axis === "y") {
+                    const cell = boardContainer.querySelector(`.block[data-x="${ship.x}"][data-y="${ship.y + i}"]`);
+                    if (cell) {
+                        cell.style.backgroundImage = `url(${shipImages[img][i]})`;
+                        cell.style.transformOrigin = 'center';
+                        cell.style.backgroundSize = 'cover';
+                        cell.style.backgroundPosition = 'center';
+                        cell.dataset.occupied = "true";
+
                     }
                 }
             }
+            img++;
         }
     }
 
@@ -159,6 +198,7 @@ export default class GameUI {
         let selectedShip = null;
         let selectedShipType = "";
         let selectedShipLength = 0;
+        let selectedShipIndex = null;
         let axis = "x";
         let placeCount = 0;
         const ships = document.querySelectorAll(".ship");
@@ -182,6 +222,7 @@ export default class GameUI {
         function selectShip(ship) {
             selectedShip = ship;
             selectedShipType = ship.dataset.ship;
+            selectedShipIndex = ship.dataset.index;
             selectedShipLength = parseInt(ship.dataset.length);
             player.gameboard[selectedShipType].axis = axis;
 
@@ -193,6 +234,7 @@ export default class GameUI {
             selectedShip = null;
             selectedShipType = "";
             selectedShipLength = 0;
+            selectedShipIndex = null;
             ships.forEach(s => s.classList.remove("selected", "dragging"));
         }
 
@@ -312,16 +354,26 @@ export default class GameUI {
 
         function highlightBlocks(x, y) {
             for (let i = 0; i < selectedShipLength; i++) {
-                let selector = "";
+                const boardContainer = document.querySelector(".start-board");
                 if (axis === "x") {
-                    selector = `.block[data-x="${x + i}"][data-y="${y}"]`;
+                    const cell = boardContainer.querySelector(`.block[data-x="${x + i}"][data-y="${y}"]`);
+                    if (cell) {
+                        cell.style.backgroundImage = `url(${shipImages[selectedShipIndex][i]})`;
+                        cell.style.transform = 'rotate(90deg)';
+                        cell.style.transformOrigin = 'center';
+                        cell.style.backgroundSize = 'cover';
+                        cell.style.backgroundPosition = 'center';
+                    }
                 }
-                else {
-                    selector = `.block[data-x="${x}"][data-y="${y + i}"]`;
-                }
-                const cell = startBoard.querySelector(selector);
-                if (cell) {
-                    cell.style.backgroundColor = "yellow";
+                else if (axis === "y") {
+                    const cell = boardContainer.querySelector(`.block[data-x="${x}"][data-y="${y + i}"]`);
+                    if (cell) {
+                        cell.style.backgroundImage = `url(${shipImages[selectShipIndex][i]})`;
+                        cell.style.transformOrigin = 'center';
+                        cell.style.backgroundSize = 'cover';
+                        cell.style.backgroundPosition = 'center';
+
+                    }
                 }
             }
         }
@@ -341,9 +393,13 @@ export default class GameUI {
 
         // random placement
         randomButton.addEventListener("click", () => {
+            this.resetShipUI();
             this.placeRandomUI();
-            startButton.disabled = false;
-            startButton.style.backgroundColor = "black";
+            const startButton = document.getElementById("play");
+            if (startButton) {
+                startButton.disabled = false;
+                startButton.style.backgroundColor = "black";
+            }
             selectedShip = null;
         });
     }
@@ -360,13 +416,16 @@ export default class GameUI {
             { display: "Boat", name: "boat1", length: 2 },
             { display: "Boat", name: "boat2", length: 2 }
         ];
+        let index = 0;
         ships.forEach(({ display, name, length }) => {
             const shipEl = document.createElement("div");
             shipEl.classList.add("ship");
             shipEl.setAttribute("data-ship", name);
             shipEl.setAttribute("data-length", length);
+            shipEl.setAttribute("data-index", index);
             shipEl.textContent = display;
             shipContainer.appendChild(shipEl);
+            index++;
         });
 
         const blocks = document.querySelectorAll(".start-board .block");
@@ -429,20 +488,8 @@ export default class GameUI {
         this.player.gameboard = new Gameboard();
         this.player.gameboard.placeRandomly();
 
-        const size = this.player.gameboard.size;
-        const grid = this.player.gameboard.blocks;
+        this.setShipUI(this.player.gameboard, board);
 
-        for (let x = 0; x < size; x++) {
-            for (let y = 0; y < size; y++) {
-                if (typeof grid[x][y] === "string") {
-                    const cell = board.querySelector(`.block[data-x="${x}"][data-y="${y}"]`);
-                    if (cell) {
-                        cell.style.backgroundColor = "yellow";
-                        cell.dataset.occupied = "true";
-                    }
-                }
-            }
-        }
         document.querySelectorAll(".ship").forEach(ship => {
             ship.remove();
         });

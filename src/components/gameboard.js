@@ -21,7 +21,6 @@ export default class Gameboard {
         if ((ship.axis === "y" && y + ship.length > 10) || (ship.axis === "x" && x + ship.length > 10)) {
             return false;
         }
-
         if (ship.axis === "y") {
             for (let i = 0; i < ship.length; i++) {
                 if (this.blocks[x][y + i] != 0) {
@@ -34,6 +33,8 @@ export default class Gameboard {
                     this.blocks[x][y + i] = ship.type;
                 }
             }
+            ship.x = x;
+            ship.y = y;
             return true;
         }
         else {
@@ -42,14 +43,14 @@ export default class Gameboard {
                     for (let j = 0; j < i; j++) {
                         this.blocks[x + j][y] = 0;
                     }
-                    console.log("already placed");
                     return false;
                 }
                 else {
                     this.blocks[x + i][y] = ship.type;
                 }
             }
-            console.log("placed ship");
+            ship.x = x;
+            ship.y = y;
             return true;
         }
 
@@ -60,14 +61,17 @@ export default class Gameboard {
         const directions = ["x", "y"]
         for (const ship of ships) {
             let placed = false;
-
+            let x=null;
+            let y=null;
             while (!placed) {
                 const axis = directions[Math.floor(Math.random() * 2)];
                 ship.axis = axis;
-                const x = Math.floor(Math.random() * this.size);
-                const y = Math.floor(Math.random() * this.size);
+                x = Math.floor(Math.random() * this.size);
+                y = Math.floor(Math.random() * this.size);
                 placed = this.placeShip(ship, x, y);
             }
+            ship.x=x;
+            ship.y=y;
         }
     }
 
@@ -136,7 +140,7 @@ export default class Gameboard {
         }
         if (this.blocks[x][y] === "boat1") {
             this.blocks[x][y] = 1;
-            this.boat1.hit(); 
+            this.boat1.hit();
             this.lastSunk = this.boat1.isSunk();
             this.lastHit = true;
             return true;
@@ -144,7 +148,7 @@ export default class Gameboard {
         if (this.blocks[x][y] === "boat2") {
             this.blocks[x][y] = 1;
             this.boat2.hit();
-            this.lastSunk= this.boat2.isSunk();
+            this.lastSunk = this.boat2.isSunk();
             this.lastHit = true;
             return true;
         }
